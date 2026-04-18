@@ -1,0 +1,16 @@
+baseURL = 'https://victoreats.com/'
+locale = 'en-us'
+title = 'Victor Eats'
+theme = 'ananke'
+
+[params]
+  description = "A food blog by Victor Chen"
+  background_color_class = "bg-near-white"
+  featured_image = ""
+  site_logo = ""
+  show_reading_time = false
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
