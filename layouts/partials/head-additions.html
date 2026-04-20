@@ -1,0 +1,110 @@
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin="" />
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""></script>
+
+<style>
+  /* ---- Tab Navigation ---- */
+  .tab-nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid #e0e0e0;
+  }
+  .tab-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background: none;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #777;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+    font-family: inherit;
+  }
+  .tab-btn:hover {
+    color: #333;
+  }
+  .tab-btn.active {
+    color: #222;
+    border-bottom-color: #e25822;
+  }
+
+  /* ---- Card Grid ---- */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+  }
+  .card-img img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+  .card-body {
+    padding: 1.25rem;
+  }
+  .card-title {
+    font-size: 1.2rem;
+    margin: 0 0 0.35rem 0;
+    font-weight: 700;
+  }
+  .card-title a {
+    color: #222;
+    text-decoration: none;
+  }
+  .card-title a:hover {
+    color: #e25822;
+  }
+  .card-address {
+    font-size: 0.85rem;
+    color: #888;
+    margin: 0 0 0.75rem 0;
+  }
+  .card-review {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: #444;
+  }
+  .card-review p {
+    margin: 0 0 0.5rem 0;
+  }
+
+  /* ---- Map ---- */
+  #map {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 600px) {
+    .card-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    #map {
+      height: 400px !important;
+    }
+    .tab-btn {
+      padding: 0.6rem 1rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>

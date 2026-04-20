@@ -1,0 +1,45 @@
+{{ define "main" }}
+<div class="pa3 pa4-ns w-100 mw8 center">
+
+  {{/* Tab Navigation */}}
+  <div class="tab-nav mb4">
+    <button class="tab-btn active" id="tab-list-btn" onclick="showTab('list')">List</button>
+    <button class="tab-btn" id="tab-map-btn" onclick="showTab('map')">Map</button>
+  </div>
+
+  {{/* List View */}}
+  <div id="view-list" class="tab-content">
+    <div class="card-grid">
+      {{ $posts := where .Site.RegularPages "Section" "posts" }}
+      {{ range sort $posts "Title" "asc" }}
+      <div class="card">
+        {{ with .Params.image }}
+        <div class="card-img">
+          <img src="{{ . }}" alt="{{ $.Title }}" loading="lazy">
+        </div>
+        {{ end }}
+        <div class="card-body">
+          <h2 class="card-title">
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+          </h2>
+          {{ with .Params.address }}
+          <p class="card-address">{{ . }}</p>
+          {{ end }}
+          <div class="card-review">
+            {{ .Content }}
+          </div>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+
+  {{/* Map View */}}
+  <div id="view-map" class="tab-content" style="display:none;">
+    <div id="map" style="height:600px; width:100%; border-radius:8px;"></div>
+  </div>
+
+</div>
+
+<script src="/js/app.js"></script>
+{{ end }}

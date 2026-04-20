@@ -10,6 +10,9 @@ theme = 'ananke'
   site_logo = ""
   show_reading_time = false
 
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
