@@ -3,16 +3,20 @@
 
   {{/* Tab Navigation */}}
   <div class="tab-nav mb4">
-    <button class="tab-btn active" id="tab-list-btn" onclick="showTab('list')">List</button>
+    <button class="tab-btn active" id="tab-serious-btn" onclick="showTab('serious')">Serious Eats</button>
+    <button class="tab-btn" id="tab-notserious-btn" onclick="showTab('notserious')">Not So Serious Eats</button>
+    <button class="tab-btn" id="tab-search-btn" onclick="showTab('search')">Search</button>
     <button class="tab-btn" id="tab-map-btn" onclick="showTab('map')">Map</button>
   </div>
 
-  {{/* List View */}}
-  <div id="view-list" class="tab-content">
+  {{ $posts := where .Site.RegularPages "Section" "posts" }}
+
+  {{/* Serious Eats View */}}
+  <div id="view-serious" class="tab-content">
     <div class="card-grid">
-      {{ $posts := where .Site.RegularPages "Section" "posts" }}
       {{ range sort $posts "Title" "asc" }}
-      <div class="card">
+      {{ if .Params.serious }}
+      <div class="card" data-lat="{{ .Params.lat }}" data-lng="{{ .Params.lng }}">
         {{ with .Params.image }}
         <div class="card-img">
           <img src="{{ . }}" alt="{{ $.Title }}" loading="lazy">
@@ -28,6 +32,101 @@
           <div class="card-review">
             {{ .Content }}
           </div>
+          <button class="edit-btn" onclick="openEdit('{{ .File.BaseFileName }}')">Edit</button>
+        </div>
+      </div>
+      {{ end }}
+      {{ end }}
+    </div>
+  </div>
+
+  {{/* Not So Serious Eats View */}}
+  <div id="view-notserious" class="tab-content" style="display:none;">
+    <div class="card-grid">
+      {{ range sort $posts "Title" "asc" }}
+      {{ if not .Params.serious }}
+      <div class="card" data-lat="{{ .Params.lat }}" data-lng="{{ .Params.lng }}">
+        {{ with .Params.image }}
+        <div class="card-img">
+          <img src="{{ . }}" alt="{{ $.Title }}" loading="lazy">
+        </div>
+        {{ end }}
+        <div class="card-body">
+          <h2 class="card-title">
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+          </h2>
+          {{ with .Params.address }}
+          <p class="card-address">{{ . }}</p>
+          {{ end }}
+          <div class="card-review">
+            {{ .Content }}
+          </div>
+          <button class="edit-btn" onclick="openEdit('{{ .File.BaseFileName }}')">Edit</button>
+        </div>
+      </div>
+      {{ end }}
+      {{ end }}
+    </div>
+  </div>
+
+  {{/* Search View */}}
+  <div id="view-search" class="tab-content" style="display:none;">
+    <div class="search-panel">
+      <div class="search-row">
+        <div class="search-field search-field-grow">
+          <label>Keywords</label>
+          <input type="text" id="search-keyword" placeholder="Search reviews, titles, addresses...">
+        </div>
+      </div>
+      <div class="search-row">
+        <div class="search-field search-field-grow">
+          <label>Near address</label>
+          <input type="text" id="search-address" placeholder="e.g. 158 Ranch Dr, Milpitas CA">
+        </div>
+        <div class="search-field">
+          <label>Radius</label>
+          <select id="search-radius">
+            <option value="5">5 miles</option>
+            <option value="10" selected>10 miles</option>
+            <option value="25">25 miles</option>
+            <option value="50">50 miles</option>
+          </select>
+        </div>
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <label>How Serious Are We?</label>
+          <select id="search-filter">
+            <option value="all">Not So Serious</option>
+            <option value="serious">Very Serious</option>
+          </select>
+        </div>
+        <div class="search-field search-buttons">
+          <button class="search-btn" id="search-btn" onclick="runSearch()">Search</button>
+          <button class="search-clear-btn" id="search-clear-btn" onclick="clearSearch()">Clear</button>
+        </div>
+      </div>
+    </div>
+    <div id="search-status" class="search-status" style="display:none;"></div>
+    <div id="search-results" class="card-grid">
+      {{ range sort $posts "Title" "asc" }}
+      <div class="card search-card" data-slug="{{ .File.BaseFileName }}" data-lat="{{ .Params.lat }}" data-lng="{{ .Params.lng }}" data-serious="{{ if .Params.serious }}true{{ else }}false{{ end }}" style="display:none;">
+        {{ with .Params.image }}
+        <div class="card-img">
+          <img src="{{ . }}" alt="{{ $.Title }}" loading="lazy">
+        </div>
+        {{ end }}
+        <div class="card-body">
+          <h2 class="card-title">
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+          </h2>
+          {{ with .Params.address }}
+          <p class="card-address">{{ . }}</p>
+          {{ end }}
+          <div class="card-review">
+            {{ .Content }}
+          </div>
+          <button class="edit-btn" onclick="openEdit('{{ .File.BaseFileName }}')">Edit</button>
         </div>
       </div>
       {{ end }}
@@ -36,9 +135,69 @@
 
   {{/* Map View */}}
   <div id="view-map" class="tab-content" style="display:none;">
+    <div class="map-filter">
+      <label class="map-toggle-label">
+        <input type="checkbox" id="map-serious-toggle" onchange="filterMap()">
+        We are taking this very seriously
+      </label>
+      <span class="map-legend">
+        <span class="map-legend-dot map-legend-red"></span> Serious
+        <span class="map-legend-dot map-legend-blue"></span> Not So Serious
+      </span>
+    </div>
     <div id="map" style="height:600px; width:100%; border-radius:8px;"></div>
   </div>
 
+</div>
+
+{{/* Post data for edit form */}}
+<script>
+var postData = {
+  {{ range $i, $p := $posts }}
+  {{ if $i }},{{ end }}
+  "{{ $p.File.BaseFileName }}": {
+    "title": {{ $p.Title | jsonify | safeJS }},
+    "address": {{ $p.Params.address | default "" | jsonify | safeJS }},
+    "lat": {{ $p.Params.lat | default 0 }},
+    "lng": {{ $p.Params.lng | default 0 }},
+    "image": {{ $p.Params.image | default "" | jsonify | safeJS }},
+    "date": "{{ $p.Date.Format "2006-01-02" }}",
+    "serious": {{ if $p.Params.serious }}true{{ else }}false{{ end }},
+    "review": {{ $p.RawContent | jsonify | safeJS }}
+  }
+  {{ end }}
+};
+</script>
+
+{{/* Edit Modal */}}
+<div id="edit-modal" class="edit-modal" style="display:none;" onclick="if(event.target===this)closeEdit()">
+  <div class="edit-modal-content">
+    <div class="edit-modal-header">
+      <h3>Edit Post</h3>
+      <button class="edit-modal-close" onclick="closeEdit()">&times;</button>
+    </div>
+    <input type="hidden" id="edit-slug">
+    <label>Title</label>
+    <input type="text" id="edit-title">
+    <label>Address</label>
+    <input type="text" id="edit-address">
+    <label>Review (markdown)</label>
+    <textarea id="edit-review" rows="6"></textarea>
+    <div class="edit-serious-row">
+      <label class="edit-radio-label">
+        <input type="radio" name="edit-serious" id="edit-serious-yes" value="true">
+        Serious Eat
+      </label>
+      <label class="edit-radio-label">
+        <input type="radio" name="edit-serious" id="edit-serious-no" value="false" checked>
+        Not So Serious Eat
+      </label>
+    </div>
+    <div class="edit-actions">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">Save</button>
+      <button class="edit-delete-btn" id="edit-delete-btn" onclick="deletePost()">Delete</button>
+    </div>
+  </div>
 </div>
 
 <script src="/js/app.js"></script>

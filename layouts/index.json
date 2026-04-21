@@ -9,7 +9,7 @@
     "lng": {{ $p.Params.lng | default 0 }},
     "image": {{ $p.Params.image | default "" | jsonify }},
     "review": {{ $p.Plain | truncate 200 | jsonify }},
-    "tags": {{ $p.Params.tags | default (slice) | jsonify }},
+    "serious": {{ if $p.Params.serious }}true{{ else }}false{{ end }},
     "permalink": {{ $p.RelPermalink | jsonify }}
   }
 {{- end }}
