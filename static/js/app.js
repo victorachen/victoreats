@@ -76,8 +76,13 @@ function initMap() {
             popupHtml += '<img src="' + item.image + '" style="width:100%;height:120px;object-fit:cover;border-radius:4px;margin-bottom:8px;">';
           }
           popupHtml += '<strong>' + item.title + '</strong>';
+          if (item.address) {
+            var escaped = item.address.replace(/'/g, "\\'");
+            popupHtml += '<p style="font-size:0.8rem;color:#666;margin:4px 0 2px;">' + item.address + ' <button onclick="navigator.clipboard.writeText(\'' + escaped + '\');this.textContent=\'Copied!\';setTimeout(function(){this.textContent=\'Copy\';}.bind(this),1500)" style="font-size:0.7rem;padding:1px 6px;border:1px solid #ccc;border-radius:3px;background:#f8f8f8;cursor:pointer;margin-left:4px;">Copy</button></p>';
+          }
           if (item.review) {
-            popupHtml += '<p style="font-size:0.85rem;margin:6px 0;">' + item.review + '</p>';
+            var clean = item.review.replace(/&amp;/g, '&');
+            popupHtml += '<p style="font-size:0.85rem;margin:6px 0;">' + clean + '</p>';
           }
           popupHtml += '<a href="' + item.permalink + '" style="font-size:0.8rem;">Read more</a>';
           popupHtml += '</div>';
