@@ -6,7 +6,7 @@ address: "grand Ave somewhere, walnut CA"
 lat: 0
 lng: 0
 image: "/images/chik-fil-a.jpg"
-serious: true
+serious: false
 ---
 
 jalapeño sandwich had honey, a sweeet surprise
