@@ -6,7 +6,7 @@ address: "21550 Valley Blvd, City Of Industry, CA 91789"
 lat: 0
 lng: 0
 image: "/images/chik-fil-a.jpg"
-serious: false
+serious: true
 ---
 
 jalapeño sandwich had honey, a sweeet surprise
