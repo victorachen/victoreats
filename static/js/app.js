@@ -4,9 +4,17 @@ let map = null;
 let mapInitialized = false;
 let mapMarkers = [];
 
-const GITHUB_TOKEN = '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';
 const REPO = 'victorachen/victoreats';
 const PASSCODE = '0';
+
+function getToken() {
+  var token = localStorage.getItem('ve_token');
+  if (!token) {
+    token = prompt('Enter GitHub token (one-time setup):');
+    if (token) localStorage.setItem('ve_token', token);
+  }
+  return token;
+}
 
 // ---- Tab switching ----
 
@@ -270,7 +278,7 @@ async function saveEdit() {
   try {
     var path = 'content/posts/' + slug + '.md';
     var res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
-      headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
+      headers: { 'Authorization': 'token ' + getToken() }
     });
     if (!res.ok) throw new Error('Failed to fetch file: ' + res.status);
     var fileData = await res.json();
@@ -278,7 +286,7 @@ async function saveEdit() {
     var updateRes = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
       method: 'PUT',
       headers: {
-        'Authorization': 'token ' + GITHUB_TOKEN,
+        'Authorization': 'token ' + getToken(),
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -310,7 +318,7 @@ async function deletePost() {
   try {
     var path = 'content/posts/' + slug + '.md';
     var res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
-      headers: { 'Authorization': 'token ' + GITHUB_TOKEN }
+      headers: { 'Authorization': 'token ' + getToken() }
     });
     if (!res.ok) throw new Error('Failed to fetch file: ' + res.status);
     var fileData = await res.json();
@@ -318,7 +326,7 @@ async function deletePost() {
     var delRes = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
       method: 'DELETE',
       headers: {
-        'Authorization': 'token ' + GITHUB_TOKEN,
+        'Authorization': 'token ' + getToken(),
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
