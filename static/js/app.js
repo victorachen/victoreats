@@ -291,29 +291,47 @@ async function saveEdit() {
   var slug = document.getElementById('edit-slug').value;
   var title = document.getElementById('edit-title').value;
   var address = document.getElementById('edit-address').value;
-  var lat = postData[slug].lat;
-  var lng = postData[slug].lng;
   var review = document.getElementById('edit-review').value;
   var serious = document.getElementById('edit-serious-yes').checked;
   var image = postData[slug].image;
   var date = postData[slug].date;
+  var lat = postData[slug].lat;
+  var lng = postData[slug].lng;
 
-  var md = '---\n'
-    + 'title: "' + title.replace(/"/g, '\\"') + '"\n'
-    + 'date: ' + date + '\n'
-    + 'draft: false\n'
-    + 'address: "' + address.replace(/"/g, '\\"') + '"\n'
-    + 'lat: ' + (lat || 0) + '\n'
-    + 'lng: ' + (lng || 0) + '\n'
-    + 'image: "' + image + '"\n'
-    + 'serious: ' + serious + '\n'
-    + '---\n\n'
-    + review + '\n';
-
-  document.getElementById('edit-save-btn').disabled = true;
-  document.getElementById('edit-save-btn').textContent = 'Saving...';
+  var addressChanged = address !== postData[slug].address;
+  var coordsMissing = !lat || !lng;
+  var saveBtn = document.getElementById('edit-save-btn');
+  saveBtn.disabled = true;
 
   try {
+    if (addressChanged || coordsMissing) {
+      saveBtn.textContent = 'Geocoding...';
+      var geoRes = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(address), {
+        headers: { 'User-Agent': 'VictorEats/1.0' }
+      });
+      var geoResults = await geoRes.json();
+      if (!geoResults.length) {
+        alert('Could not geocode this address. Save aborted — try a more specific address (street + city + state).');
+        return;
+      }
+      lat = parseFloat(geoResults[0].lat);
+      lng = parseFloat(geoResults[0].lon);
+    }
+
+    saveBtn.textContent = 'Saving...';
+
+    var md = '---\n'
+      + 'title: "' + title.replace(/"/g, '\\"') + '"\n'
+      + 'date: ' + date + '\n'
+      + 'draft: false\n'
+      + 'address: "' + address.replace(/"/g, '\\"') + '"\n'
+      + 'lat: ' + lat + '\n'
+      + 'lng: ' + lng + '\n'
+      + 'image: "' + image + '"\n'
+      + 'serious: ' + serious + '\n'
+      + '---\n\n'
+      + review + '\n';
+
     var path = 'content/posts/' + slug + '.md';
     var res = await fetch(WORKER + '/contents/' + path);
     if (!res.ok) throw new Error('Failed to fetch file: ' + res.status);
