@@ -164,6 +164,32 @@
     transition: background 0.2s, color 0.2s;
   }
   .search-clear-btn:hover { background: #f0f0f0; color: #555; }
+  .search-address-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .search-address-row input[type="text"] {
+    flex: 1;
+    min-width: 0;
+  }
+  .search-loc-btn {
+    padding: 0.55rem 0.85rem;
+    background: #fff;
+    color: #555;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .search-loc-btn:hover {
+    background: #fff5f0;
+    color: #e25822;
+    border-color: #e25822;
+  }
+  .search-loc-btn:disabled { background: #f0f0f0; color: #aaa; cursor: default; }
   .search-status {
     font-size: 0.85rem;
     color: #666;

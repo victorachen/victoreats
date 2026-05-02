@@ -81,7 +81,10 @@
       <div class="search-row">
         <div class="search-field search-field-grow">
           <label>Near address</label>
-          <input type="text" id="search-address" placeholder="e.g. 158 Ranch Dr, Milpitas CA">
+          <div class="search-address-row">
+            <input type="text" id="search-address" placeholder="e.g. 158 Ranch Dr, Milpitas CA">
+            <button type="button" class="search-loc-btn" id="search-loc-btn" onclick="useMyLocation()" title="Use my current location">📍 Use my location</button>
+          </div>
         </div>
         <div class="search-field">
           <label>Radius</label>

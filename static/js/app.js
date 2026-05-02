@@ -106,6 +106,40 @@ function filterMap() {
 
 // ---- Search ----
 
+var userCoords = null;
+
+function useMyLocation() {
+  var btn = document.getElementById('search-loc-btn');
+  var input = document.getElementById('search-address');
+  var status = document.getElementById('search-status');
+
+  if (!navigator.geolocation) {
+    status.textContent = 'Geolocation is not supported by this browser.';
+    status.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Locating...';
+
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    input.value = '📍 Current location';
+    btn.disabled = false;
+    btn.textContent = '📍 Use my location';
+  }, function(err) {
+    userCoords = null;
+    btn.disabled = false;
+    btn.textContent = '📍 Use my location';
+    var msg = 'Could not get your location';
+    if (err.code === 1) msg = 'Location permission denied. Enable it in your browser settings.';
+    else if (err.code === 2) msg = 'Location unavailable. Try again or type an address.';
+    else if (err.code === 3) msg = 'Location request timed out.';
+    status.textContent = msg;
+    status.style.display = 'block';
+  }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+}
+
 function haversineDistance(lat1, lng1, lat2, lng2) {
   var R = 3958.8;
   var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -131,7 +165,11 @@ async function runSearch() {
   var centerLat = null, centerLng = null, locationName = '';
 
   try {
-    if (address) {
+    if (userCoords) {
+      centerLat = userCoords.lat;
+      centerLng = userCoords.lng;
+      locationName = 'your location';
+    } else if (address) {
       var res = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(address), {
         headers: { 'User-Agent': 'VictorEats/1.0' }
       });
@@ -203,6 +241,7 @@ function clearSearch() {
   document.getElementById('search-radius').value = '10';
   document.getElementById('search-filter').value = 'all';
   document.getElementById('search-status').style.display = 'none';
+  userCoords = null;
   document.querySelectorAll('#search-results .search-card').forEach(function(card) {
     card.style.display = 'none';
   });
@@ -212,8 +251,18 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('search-keyword').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') runSearch();
   });
-  document.getElementById('search-address').addEventListener('keydown', function(e) {
+  var addrInput = document.getElementById('search-address');
+  addrInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') runSearch();
+  });
+  addrInput.addEventListener('input', function() {
+    if (addrInput.value !== '📍 Current location') userCoords = null;
+  });
+  addrInput.addEventListener('focus', function() {
+    if (addrInput.value === '📍 Current location') {
+      addrInput.value = '';
+      userCoords = null;
+    }
   });
 });
 
