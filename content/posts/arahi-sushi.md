@@ -3,8 +3,8 @@ title: "Arahi sushi"
 date: 2026-05-02
 draft: false
 address: "240 Castro St, Mountain View, CA 94041"
-lat: 0
-lng: 0
+lat: 37.3933354
+lng: -122.0795550
 image: "/images/arahi-sushi.jpg"
 serious: true
 ---
