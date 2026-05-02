@@ -1,11 +1,12 @@
 ---
 title: "Arahi sushi"
-date: "2026-05-02"
-restaurant: "Arahi sushi"
+date: 2026-05-02
+draft: false
 address: "240 Castro St, Mountain View, CA 94041"
+lat: 0
+lng: 0
 image: "/images/arahi-sushi.jpg"
-tags:
-  - "food"
+serious: true
 ---
 
 The best teriyaki beef I’ve ever had,!! Medium rare, tasted like steak yummm
