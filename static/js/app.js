@@ -4,17 +4,7 @@ let map = null;
 let mapInitialized = false;
 let mapMarkers = [];
 
-const REPO = 'victorachen/victoreats';
-const PASSCODE = '0';
-
-function getToken() {
-  var token = localStorage.getItem('ve_token');
-  if (!token) {
-    token = prompt('Enter GitHub token (one-time setup):');
-    if (token) localStorage.setItem('ve_token', token);
-  }
-  return token;
-}
+const WORKER = 'https://victoreats-edit.vchen2120.workers.dev';
 
 // ---- Tab switching ----
 
@@ -230,12 +220,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // ---- Edit / Delete ----
 
 function openEdit(slug) {
-  var code = prompt('Enter passcode:');
-  if (code !== PASSCODE) {
-    if (code !== null) alert('Wrong passcode');
-    return;
-  }
-
   var data = postData[slug];
   if (!data) { alert('Post not found'); return; }
 
@@ -282,18 +266,13 @@ async function saveEdit() {
 
   try {
     var path = 'content/posts/' + slug + '.md';
-    var res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
-      headers: { 'Authorization': 'token ' + getToken() }
-    });
+    var res = await fetch(WORKER + '/contents/' + path);
     if (!res.ok) throw new Error('Failed to fetch file: ' + res.status);
     var fileData = await res.json();
 
-    var updateRes = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
+    var updateRes = await fetch(WORKER + '/contents/' + path, {
       method: 'PUT',
-      headers: {
-        'Authorization': 'token ' + getToken(),
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         message: 'Update ' + title,
         content: btoa(unescape(encodeURIComponent(md))),
@@ -322,18 +301,13 @@ async function deletePost() {
 
   try {
     var path = 'content/posts/' + slug + '.md';
-    var res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
-      headers: { 'Authorization': 'token ' + getToken() }
-    });
+    var res = await fetch(WORKER + '/contents/' + path);
     if (!res.ok) throw new Error('Failed to fetch file: ' + res.status);
     var fileData = await res.json();
 
-    var delRes = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
+    var delRes = await fetch(WORKER + '/contents/' + path, {
       method: 'DELETE',
-      headers: {
-        'Authorization': 'token ' + getToken(),
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         message: 'Delete ' + postData[slug].title,
         sha: fileData.sha
