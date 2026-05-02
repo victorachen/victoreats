@@ -3,6 +3,8 @@ title: "The Poke Place"
 date: "2026-04-23"
 restaurant: "The Poke Place"
 address: "10710 Foothill Blvd Suite 120, Rancho Cucamonga, CA 91730"
+lat: 34.1080071
+lng: -117.5715895
 image: "/images/the-poke-place.jpg"
 tags:
   - "food"
