@@ -1,5 +1,5 @@
 ---
-title: "Arahi sushi"
+title: "Arashi sushi"
 date: 2026-05-02
 draft: false
 address: "240 Castro St, Mountain View, CA 94041"
