@@ -1,8 +1,8 @@
 """Backfill missing or zero lat/lng on Hugo posts.
 
 Walks content/posts/*.md, finds entries where lat/lng are absent or
-both ~0, geocodes the address via Nominatim (with Photon fallback),
-and rewrites the front matter in place.
+both ~0, geocodes the address via Nominatim → Photon → US Census
+Geocoder, and rewrites the front matter in place.
 
 Run from repo root. Used by .github/workflows/backfill-coords.yml.
 """
@@ -56,8 +56,30 @@ def photon(address: str) -> tuple[float, float] | None:
     return None
 
 
+def census(address: str) -> tuple[float, float] | None:
+    # US Census Geocoder (TIGER data) — US-only but covers rural/farm
+    # addresses where OSM has gaps.
+    q = urllib.parse.urlencode({
+        "address": address,
+        "benchmark": "Public_AR_Current",
+        "format": "json",
+    })
+    try:
+        data = _http_get_json(
+            f"https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?{q}"
+        )
+    except Exception as e:
+        print(f"  census error: {e}")
+        return None
+    matches = (data.get("result") or {}).get("addressMatches") or []
+    if matches:
+        c = matches[0]["coordinates"]
+        return float(c["y"]), float(c["x"])
+    return None
+
+
 def geocode(address: str) -> tuple[float, float] | None:
-    return nominatim(address) or photon(address)
+    return nominatim(address) or photon(address) or census(address)
 
 
 def split_front_matter(text: str) -> tuple[str, str] | tuple[None, None]:
@@ -122,7 +144,7 @@ def main(dry_run: bool = False) -> int:
         print(f"{filename}: geocoding {address!r}")
         coords = geocode(address)
         if not coords:
-            print("  failed (both providers)")
+            print("  failed (all providers)")
             failed += 1
             time.sleep(1.1)
             continue

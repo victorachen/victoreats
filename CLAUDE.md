@@ -72,9 +72,9 @@ Posts are created automatically by the `victoreats_bot` (separate repo/service).
 ## Geocoding & Coord Backfill (May 2026)
 Three-layer resilience so a Nominatim hiccup never blocks a post:
 
-1. **Bot-time geocoding** (`victoreats_bot/geocode.py`): Nominatim with 3 retries (1s/2s/4s backoff), then Photon (`photon.komoot.io/api/`) as a fallback. Both are free, OSM-based, on separate infrastructure.
-2. **Bot posts anyway on total failure**: if both providers fail, the bot writes the post with `lat: 0, lng: 0` and replies with a "geocoding failed, posted without map pin" warning. Previously the bot rejected the post entirely (the failure mode that prompted this work — Tony's Pizza Napoletana, May 2 2026).
-3. **Daily backfill workflow** (`.github/workflows/backfill-coords.yml`): scans `content/posts/*.md` for missing or `~0` coords, geocodes (Nominatim → Photon), commits any updates. Runs at 12:00 UTC daily; can also trigger manually via `workflow_dispatch`.
+1. **Bot-time geocoding** (`victoreats_bot/geocode.py`): Nominatim with 3 retries (1s/2s/4s backoff), then Photon (`photon.komoot.io/api/`), then the **US Census Geocoder** (`geocoding.geo.census.gov`, TIGER data, US-only). Census catches rural/farm addresses where OSM has gaps — e.g. "501 Hoffman Ln, Brentwood CA 94513" returns 0 results from both Nominatim and Photon (May 4 2026, Very Berry Mulberry post) but resolves cleanly via Census.
+2. **Bot posts anyway on total failure**: if all providers fail, the bot writes the post with `lat: 0, lng: 0` and replies with a "geocoding failed, posted without map pin" warning. Previously the bot rejected the post entirely (the failure mode that prompted this work — Tony's Pizza Napoletana, May 2 2026).
+3. **Daily backfill workflow** (`.github/workflows/backfill-coords.yml`): scans `content/posts/*.md` for missing or `~0` coords, geocodes (Nominatim → Photon → Census), commits any updates. Runs at 12:00 UTC daily; can also trigger manually via `workflow_dispatch`.
 
 Coord-aware site behavior (already in place, do not break):
 - `app.js:60` — map skips pins where `lat && lng` is falsy (so `0,0` posts are silently omitted)
