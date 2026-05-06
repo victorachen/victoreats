@@ -1,13 +1,12 @@
 ---
 title: "Kajiken"
-date: "2026-05-04"
-restaurant: "Kajiken"
+date: 2026-05-04
+draft: false
 address: "3978 Summit Rd, Dublin, CA 94568"
 lat: 37.7043175
 lng: -121.8641883
 image: "/images/kajiken.jpg"
-tags:
-  - "food"
+serious: false
 ---
 
-try the Indian place next door next time, that place looked POPPIN
+try the Indian place next door next time, that place looked more poppin 
