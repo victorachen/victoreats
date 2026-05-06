@@ -172,7 +172,7 @@
         {{ if $entry }}{{ if ge $entry.steps $goal }}{{ $accomplished = true }}{{ end }}{{ end }}
         {{ $tooltip := printf "Day %d — %s" (add $i 1) ($date.Format "Jan 2") }}
         {{ if $entry }}{{ $tooltip = printf "%s: %s steps" $tooltip (lang.FormatNumberCustom 0 $entry.steps) }}{{ end }}
-        <div class="steps-cell{{ if $accomplished }} steps-cell-done{{ end }}" title="{{ $tooltip }}">
+        <div class="steps-cell{{ if $accomplished }} steps-cell-done{{ end }}{{ if $entry }} steps-cell-logged{{ end }}" title="{{ $tooltip }}"{{ if $entry }} onclick="openSteps('{{ $dateStr }}')"{{ end }}>
           <span class="steps-cell-num">{{ add $i 1 }}</span>
         </div>
       {{ end }}
@@ -221,6 +221,20 @@ var postData = {
   }
   {{ end }}
 };
+
+var stepsData = {
+  {{ range $i, $entry := $steps.days }}
+  {{ if $i }},{{ end }}
+  "{{ $entry.date }}": {
+    "date": {{ $entry.date | jsonify | safeJS }},
+    "steps": {{ $entry.steps }},
+    "note": {{ $entry.note | default "" | jsonify | safeJS }},
+    "image": {{ $entry.image | default "" | jsonify | safeJS }}
+  }
+  {{ end }}
+};
+var stepsGoal = {{ $steps.goal }};
+var stepsStart = "{{ $steps.start_date }}";
 </script>
 
 {{/* Edit Modal */}}
@@ -251,6 +265,21 @@ var postData = {
       <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">Save</button>
       <button class="edit-delete-btn" id="edit-delete-btn" onclick="deletePost()">Delete</button>
     </div>
+  </div>
+</div>
+
+{{/* Steps Day Modal */}}
+<div id="steps-modal" class="edit-modal" style="display:none;" onclick="if(event.target===this)closeSteps()">
+  <div class="edit-modal-content steps-modal-content">
+    <div class="edit-modal-header">
+      <h3 id="steps-modal-title">Day</h3>
+      <button class="edit-modal-close" onclick="closeSteps()">&times;</button>
+    </div>
+    <div id="steps-modal-image-wrap" style="display:none;">
+      <img id="steps-modal-image" src="" alt="">
+    </div>
+    <p id="steps-modal-count" class="steps-modal-count"></p>
+    <p id="steps-modal-note" class="steps-modal-note"></p>
   </div>
 </div>
 

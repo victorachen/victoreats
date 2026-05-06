@@ -358,6 +358,69 @@ async function saveEdit() {
   }
 }
 
+// ---- Steps modal ----
+
+function formatDateLong(dateStr) {
+  // dateStr is "YYYY-MM-DD"; build a Date in local time to avoid TZ shift
+  var parts = dateStr.split('-');
+  var d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var day = d.getDate();
+  var suffix = 'th';
+  var mod10 = day % 10, mod100 = day % 100;
+  if (mod100 !== 11 && mod10 === 1) suffix = 'st';
+  else if (mod100 !== 12 && mod10 === 2) suffix = 'nd';
+  else if (mod100 !== 13 && mod10 === 3) suffix = 'rd';
+  return months[d.getMonth()] + ' ' + day + suffix + ', ' + d.getFullYear();
+}
+
+function dayNumber(dateStr) {
+  var s = stepsStart.split('-');
+  var start = new Date(parseInt(s[0], 10), parseInt(s[1], 10) - 1, parseInt(s[2], 10));
+  var p = dateStr.split('-');
+  var d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+  return Math.round((d - start) / 86400000) + 1;
+}
+
+function openSteps(dateStr) {
+  var entry = stepsData[dateStr];
+  if (!entry) return;
+
+  document.getElementById('steps-modal-title').textContent =
+    'Day ' + dayNumber(dateStr) + ' — ' + formatDateLong(dateStr);
+
+  var countEl = document.getElementById('steps-modal-count');
+  var diff = entry.steps - stepsGoal;
+  var diffStr = (diff >= 0 ? '+' : '') + diff.toLocaleString();
+  countEl.textContent = entry.steps.toLocaleString() + ' steps (' + diffStr + ' vs goal)';
+  countEl.classList.toggle('under-goal', entry.steps < stepsGoal);
+
+  var noteEl = document.getElementById('steps-modal-note');
+  if (entry.note) {
+    noteEl.textContent = '"' + entry.note + '"';
+    noteEl.style.display = '';
+  } else {
+    noteEl.style.display = 'none';
+  }
+
+  var imgWrap = document.getElementById('steps-modal-image-wrap');
+  var img = document.getElementById('steps-modal-image');
+  if (entry.image) {
+    img.src = entry.image;
+    img.alt = 'Day ' + dayNumber(dateStr);
+    imgWrap.style.display = '';
+  } else {
+    imgWrap.style.display = 'none';
+    img.src = '';
+  }
+
+  document.getElementById('steps-modal').style.display = 'flex';
+}
+
+function closeSteps() {
+  document.getElementById('steps-modal').style.display = 'none';
+}
+
 async function deletePost() {
   if (!confirm('Delete this post permanently?')) return;
 
