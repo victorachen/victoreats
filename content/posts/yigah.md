@@ -9,4 +9,4 @@ image: "/images/yigah.jpg"
 serious: true
 ---
 
-gotta get the katsu next time man
+gotta get the katsu or yuk dae jang next time; miso cabbage soup was good but you can make that at home
