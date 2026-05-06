@@ -9,7 +9,7 @@ const WORKER = 'https://victoreats-edit.vchen2120.workers.dev';
 // ---- Tab switching ----
 
 function showTab(tab) {
-  var tabs = ['serious', 'notserious', 'search', 'map'];
+  var tabs = ['serious', 'notserious', 'search', 'map', 'noneats'];
   tabs.forEach(function(t) {
     document.getElementById('view-' + t).style.display = t === tab ? 'block' : 'none';
     document.getElementById('tab-' + t + '-btn').classList.toggle('active', t === tab);

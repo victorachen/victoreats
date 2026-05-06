@@ -7,6 +7,7 @@
     <button class="tab-btn" id="tab-notserious-btn" onclick="showTab('notserious')">Not So Serious Eats</button>
     <button class="tab-btn" id="tab-search-btn" onclick="showTab('search')">Search</button>
     <button class="tab-btn" id="tab-map-btn" onclick="showTab('map')">Map</button>
+    <button class="tab-btn" id="tab-noneats-btn" onclick="showTab('noneats')">Non Eats</button>
   </div>
 
   {{ $posts := where .Site.RegularPages "Section" "posts" }}
@@ -149,6 +150,56 @@
       </span>
     </div>
     <div id="map" style="height:600px; width:100%; border-radius:8px;"></div>
+  </div>
+
+  {{/* Non Eats View — Step Challenge */}}
+  {{ $steps := .Site.Data.steps }}
+  <div id="view-noneats" class="tab-content" style="display:none;">
+    <div class="steps-header">
+      <h2 class="steps-title">{{ $steps.duration_days }}-Day {{ lang.FormatNumberCustom 0 $steps.goal }}-Step Challenge</h2>
+      <p class="steps-subtitle">Started {{ (time.AsTime $steps.start_date).Format "January 2, 2006" }} · Goal: {{ lang.FormatNumberCustom 0 $steps.goal }} steps/day</p>
+    </div>
+
+    <div class="steps-grid">
+      {{ $start := time.AsTime $steps.start_date }}
+      {{ $goal := $steps.goal }}
+      {{ range $i := seq 0 (sub $steps.duration_days 1) }}
+        {{ $date := $start.AddDate 0 0 $i }}
+        {{ $dateStr := $date.Format "2006-01-02" }}
+        {{ $matches := where $steps.days "date" $dateStr }}
+        {{ $entry := index $matches 0 }}
+        {{ $accomplished := false }}
+        {{ if $entry }}{{ if ge $entry.steps $goal }}{{ $accomplished = true }}{{ end }}{{ end }}
+        {{ $tooltip := printf "Day %d — %s" (add $i 1) ($date.Format "Jan 2") }}
+        {{ if $entry }}{{ $tooltip = printf "%s: %s steps" $tooltip (lang.FormatNumberCustom 0 $entry.steps) }}{{ end }}
+        <div class="steps-cell{{ if $accomplished }} steps-cell-done{{ end }}" title="{{ $tooltip }}">
+          <span class="steps-cell-num">{{ add $i 1 }}</span>
+        </div>
+      {{ end }}
+    </div>
+
+    <div class="steps-notes">
+      {{ if $steps.days }}
+        {{ range sort $steps.days "date" "desc" }}
+          {{ $d := time.AsTime .date }}
+          {{ $day := $d.Day }}
+          {{ $suffix := "th" }}
+          {{ $mod10 := mod $day 10 }}
+          {{ $mod100 := mod $day 100 }}
+          {{ if and (ne $mod100 11) (eq $mod10 1) }}{{ $suffix = "st" }}
+          {{ else if and (ne $mod100 12) (eq $mod10 2) }}{{ $suffix = "nd" }}
+          {{ else if and (ne $mod100 13) (eq $mod10 3) }}{{ $suffix = "rd" }}
+          {{ end }}
+          <div class="steps-note">
+            <span class="steps-note-date">{{ $d.Format "January 2" }}{{ $suffix }}</span>
+            <span class="steps-note-count">{{ lang.FormatNumberCustom 0 .steps }} steps</span>
+            {{ with .note }}<span class="steps-note-text">"{{ . }}"</span>{{ end }}
+          </div>
+        {{ end }}
+      {{ else }}
+        <p class="steps-empty">No days logged yet. Text the bot "15,000 steps - feeling good!" to start.</p>
+      {{ end }}
+    </div>
   </div>
 
 </div>

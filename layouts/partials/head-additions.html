@@ -392,6 +392,89 @@
   .map-legend-red { background: #cb2b3e; }
   .map-legend-blue { background: #2a81cb; }
 
+  /* ---- Step Challenge (Non Eats) ---- */
+  .steps-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .steps-title {
+    font-size: 1.4rem;
+    margin: 0 0 0.25rem 0;
+    color: #222;
+  }
+  .steps-subtitle {
+    font-size: 0.9rem;
+    color: #777;
+    margin: 0;
+  }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    max-width: 500px;
+    margin: 0 auto 2rem auto;
+  }
+  .steps-cell {
+    aspect-ratio: 1 / 1;
+    background: #d8d8d8;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.15s, background 0.15s;
+    cursor: default;
+  }
+  .steps-cell:hover {
+    transform: scale(1.05);
+  }
+  .steps-cell-done {
+    background: #4caf50;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
+  }
+  .steps-cell-num {
+    line-height: 1;
+  }
+  .steps-notes {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .steps-note {
+    background: #fff;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.6rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    font-size: 0.95rem;
+    color: #444;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    align-items: baseline;
+  }
+  .steps-note-date {
+    font-weight: 700;
+    color: #222;
+    min-width: 110px;
+  }
+  .steps-note-count {
+    color: #4caf50;
+    font-weight: 600;
+  }
+  .steps-note-text {
+    color: #666;
+    font-style: italic;
+  }
+  .steps-empty {
+    text-align: center;
+    color: #888;
+    font-size: 0.95rem;
+    padding: 2rem;
+  }
+
   /* ---- Responsive ---- */
   @media (max-width: 600px) {
     .card-grid {
