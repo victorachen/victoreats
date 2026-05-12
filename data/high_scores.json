@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "name": "test",
+    "startEpoch": 1778571330246,
+    "endEpoch": 1778571339968,
+    "totalCards": 2,
+    "totalMs": 3700,
+    "avgMs": 1850
+  }
+]
