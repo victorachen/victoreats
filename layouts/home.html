@@ -8,6 +8,7 @@
     <button class="tab-btn" id="tab-search-btn" onclick="showTab('search')">Search</button>
     <button class="tab-btn" id="tab-map-btn" onclick="showTab('map')">Map</button>
     <button class="tab-btn" id="tab-noneats-btn" onclick="showTab('noneats')">Non Eats</button>
+    <button class="tab-btn" id="tab-timer-btn" onclick="showTab('timer')">Timer</button>
   </div>
 
   {{ $posts := where .Site.RegularPages "Section" "posts" }}
@@ -199,6 +200,70 @@
       {{ else }}
         <p class="steps-empty">No days logged yet. Text the bot "15,000 steps - feeling good!" to start.</p>
       {{ end }}
+    </div>
+  </div>
+
+  {{/* Timer View */}}
+  <div id="view-timer" class="tab-content" style="display:none;">
+    <button class="timer-exit-btn" onclick="showTab('serious')" title="Exit Timer">&times;</button>
+    <div class="timer-layout">
+      <div class="timer-stage">
+        <div class="timer-circle-wrap" onclick="timerClick()" title="Click to log a rep">
+          <svg class="timer-svg" viewBox="0 0 220 220">
+            <circle cx="110" cy="110" r="100" class="timer-track"></circle>
+            <circle cx="110" cy="110" r="100" class="timer-progress" id="timer-progress"></circle>
+          </svg>
+          <div class="timer-display">
+            <div class="timer-time" id="timer-time">0:00</div>
+            <div class="timer-hint" id="timer-hint">Click or press Space to start</div>
+          </div>
+        </div>
+        <button class="timer-reset-btn" onclick="timerReset()">Reset</button>
+      </div>
+      <div class="timer-log">
+        <h3 class="timer-log-title">Cards</h3>
+        <ul id="timer-reps" class="timer-reps"></ul>
+        <p id="timer-reps-empty" class="timer-reps-empty">No cards logged yet.</p>
+        <div class="timer-summary">
+          <div class="timer-summary-left">
+            <div class="timer-stat">Total cards completed: <span id="timer-total-count">0</span></div>
+          </div>
+          <div class="timer-summary-right">
+            <div class="timer-stat-label">Time remaining</div>
+            <div class="timer-remaining" id="timer-remaining">45:00</div>
+          </div>
+        </div>
+        <button class="timer-save-btn" id="timer-save-btn" onclick="openSaveSession()" disabled>Save Session 🎮</button>
+      </div>
+    </div>
+
+    {{/* High Scores */}}
+    <div class="hs-section">
+      <button class="hs-header" onclick="toggleHighScores()" id="hs-header-btn">
+        <span class="hs-title">🕹️ HIGH SCORES</span>
+        <span class="hs-caret" id="hs-caret">▸</span>
+      </button>
+      <div class="hs-body" id="hs-body" style="display:none;">
+        <div id="hs-list" class="hs-list"></div>
+        <p id="hs-empty" class="hs-empty">No sessions logged yet. Finish a round and save your score!</p>
+      </div>
+    </div>
+  </div>
+
+  {{/* Save Session Modal */}}
+  <div id="save-session-modal" class="edit-modal" style="display:none;" onclick="if(event.target===this)closeSaveSession()">
+    <div class="edit-modal-content" style="max-width:420px;">
+      <div class="edit-modal-header">
+        <h3>🎮 Save Session</h3>
+        <button class="edit-modal-close" onclick="closeSaveSession()">&times;</button>
+      </div>
+      <div id="save-session-preview" class="save-session-preview"></div>
+      <label>Session name</label>
+      <input type="text" id="save-session-name" placeholder="e.g. Pharm Block 3" maxlength="40">
+      <div class="edit-actions">
+        <button class="edit-save-btn" onclick="confirmSaveSession()">Save</button>
+        <button class="edit-delete-btn" onclick="closeSaveSession()">Cancel</button>
+      </div>
     </div>
   </div>
 
