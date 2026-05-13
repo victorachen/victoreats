@@ -9,4 +9,4 @@ image: "/images/der-rathskeller-wisconsin-union.jpg"
 serious: true
 ---
 
-this hit, life is good, this one is serious
+this really hit! Live music by the lake. life is good. The cheese curds were sour much better than the ones at Culver’s. Really fresh and went well with their house sauce + hot sauce+ freshness of Caesar salad wrap. this one is serious
