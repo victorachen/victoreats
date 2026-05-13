@@ -9,4 +9,4 @@ image: "/images/kozu-izakaya.jpg"
 serious: true
 ---
 
-my new favorite restaurant this month, reasonably priced, amazing relaxing vibe, really tasty food
+my new favorite restaurant this month: reasonably priced, amazing relaxing vibe, really tasty food
