@@ -3,8 +3,8 @@ title: "Irvine Commons Dining Hall"
 date: "2026-05-14"
 restaurant: "Irvine Commons Dining Hall"
 address: "1200 E Colton Ave, Redlands, CA 92373"
-lat: 0.0
-lng: 0.0
+lat: 34.0624947
+lng: -117.1654414
 image: "/images/irvine-commons-dining-hall.jpg"
 tags:
   - "food"
