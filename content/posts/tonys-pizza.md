@@ -10,3 +10,5 @@ serious: true
 ---
 
 the best pizza in California by a loooong ways
+
+Nick comment: I concur. This was actually the best pizza I’ve ever had
