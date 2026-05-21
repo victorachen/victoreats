@@ -83,6 +83,12 @@
       "date": "2026-05-19",
       "steps": 15000,
       "note": "man working all day and commuting getting back at 8:30 = really hard at end of day. Got good sleep though and the mini bus is making me happy!"
+    },
+    {
+      "date": "2026-05-20",
+      "steps": 15000,
+      "note": "400 on stair master 8 minutes.",
+      "image": "/images/steps/2026-05-20.jpg"
     }
   ]
 }
